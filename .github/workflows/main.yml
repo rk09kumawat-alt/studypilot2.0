@@ -1,0 +1,24 @@
+name: Build StudyPilot APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build Android APK
+        run: |
+          mkdir -p output
+          echo "StudyPilot HTML source is ready."
+          echo "A native Android project is required to compile an APK."
