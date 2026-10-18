@@ -17,8 +17,32 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Build Android APK
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create Android project
         run: |
-          mkdir -p output
-          echo "StudyPilot HTML source is ready."
-          echo "A native Android project is required to compile an APK."
+          npm install -g @capacitor/cli
+          mkdir studypilot
+          cd studypilot
+          npm init -y
+          npm install @capacitor/core @capacitor/android
+          npx cap init StudyPilot com.rahul.studypilot --web-dir www
+          mkdir www
+          cp ../index.html www/index.html
+          npx cap add android
+          npx cap sync android
+
+      - name: Build APK
+        run: |
+          cd studypilot/android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: StudyPilot-APK
+          path: studypilot/android/app/build/outputs/apk/debug/app-debug.apk
